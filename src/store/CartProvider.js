@@ -16,10 +16,8 @@ const cartReducer = (state, action) => {
   // different behaviors depending on which type of function is dispatched
 
   if (action.type === "ADD") {
-    // grab state.items (existing state array)
-    // concat() returns a brand new array with the new item we are getting
-
-    // const updatedItems = state.items.concat(action.item);
+    //updating price
+const updatedTotalAmount = state.totalAmount + action.item.price * action.item.amount;
 
     // check if item is already part of the cart
     // findIndex() checks the index of the item in the array
@@ -63,11 +61,6 @@ const cartReducer = (state, action) => {
       updatedItems = state.items.concat(action.item);
     }
 
-    // updating price
-
-    const updatedTotalAmount =
-      state.totalAmount + action.item.price * action.item.amount;
-
     // return state where we set the values to the new variables we have created
 
     return {
@@ -96,7 +89,9 @@ const cartReducer = (state, action) => {
         totalAmount: updatedTotalAmount,
       };
   }
-
+  if(action.type === 'CLEAR'){
+    return defaultCartState;
+  }
   return defaultCartState;
 };
 
@@ -115,11 +110,16 @@ const CartProvider = (props) => {
     dispatchCartAction({ type: "REMOVE", id: id });
   };
 
+  const clearCartHandler = () => {
+    dispatchCartAction({type: 'CLEAR'});
+  }
+
   const cartContext = {
     items: cartState.items,
     totalAmount: cartState.totalAmount,
     addItem: addItemToCartHandler,
     removeItem: removeItemFromCartHandler,
+    clearCart: clearCartHandler
   };
 
   return (
